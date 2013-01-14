@@ -1,14 +1,10 @@
 # -- Generated file --
-import os
-
-INI = os.environ['POR_INI']
-
 from time import time
+import hashlib
 from ConfigParser import ConfigParser
 
 from por.models import DBSession, includeme
 from por.models.dashboard import User
-from md5 import md5
 
 # TODO: sostituire con un config parser vero?
 class Config(object):
@@ -16,7 +12,7 @@ class Config(object):
     def __init__(self, ini):
         self.cfg = ConfigParser()
         self.cfg.read(ini)
-            
+
     @property
     def registry(self):
         class Registry:
@@ -30,7 +26,7 @@ class Config(object):
 # TODO: cache
 
 def check_password(environ, login, password):
-    hash = md5('%s:%s').hexdigest()
+    hash = hashlib.md5('%s:%s').hexdigest()
     if int(time()) - cache.get(hash, 0) < TIMEOUT:
         return True
     else:
@@ -46,7 +42,6 @@ def check_password(environ, login, password):
 
 TIMEOUT=300
 cache = {}
-includeme(Config(INI))
 
-def main():
-    pass
+def main(ini, *args):
+    includeme(Config(ini))

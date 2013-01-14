@@ -61,7 +61,7 @@ def _execute(cmd):
 
 def add_svn_to_project(application):
     from por.models.dashboard import Project
-    
+
     project = DBSession.query(Project).get(application.project_id)
 
     svnenvs = os.environ.get('SVNENVS')
@@ -71,11 +71,11 @@ def add_svn_to_project(application):
         os.mkdir(svnenvs)
 
     svnname = None
-    appname = idnormalizer.normalize(application.name)
+    #appname = idnormalizer.normalize(application.name)
 
     idx = ''
     while (not svnname):
-        svnname = idnormalizer.normalize("%s%s" % (appname, idx))
+        svnname = idnormalizer.normalize("%s%s" % (project.id, idx))
         svn_path = '%s/%s' % (svnenvs, svnname)
         if os.path.exists(svn_path):
            idx = idx and (idx+1) or 1

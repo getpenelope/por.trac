@@ -119,32 +119,42 @@ def write_authz(outfile):
     #    # authz.set('groups', '@admin', 'haren')
 
     # defaults
-    authz.add_section('/')
-    authz.set('/', '*', 'r')
+    #authz.add_section('/')
+    #authz.set('/', '*', 'r')
     # authz.set('/', '@admin', 'rw')
-    
+
     users = db.query(User).all()
-    
+
     for repo in db.query(Subversion).all():
         # repos
         section = '%s:/' % repo.application_uri().split('/')[-1]
         authz.add_section(section)
         for user in users:
-            #TODO: attualmente non esiste un RoleFinder 
-            # per Application/Subversion, quindi uso quello
-            # del progetto
-            roles = user.roles_in_context(repo.project)
-            if 'administrator' in roles:
-                authz.set(section, user.svn_login, 'rw')    
-            elif 'internal_developer' in roles:
-                authz.set(section, user.svn_login, 'rw')    
-            elif 'secretary' in roles:
-                # ????
-                authz.set(section, user.svn_login, 'r')
-            # TODO ... completare    
+            roles = user.roles_in_context(repo.project).copy()
+            if 'local_developer' in roles:
+                roles.add(u'internal_developer')
+            if 'local_project_manager' in roles:
+                roles.add(u'project_manager')
+            acl = [(a.role_id, a.permission_name) for a in repo.acl]
+            acl.append(('administrator', 'edit'))
+            acl.append(('administrator', 'view'))
+            permissions = {}
+            for x,y in acl:
+                if x in roles:
+                    permissions.setdefault(x, []).append(y)
+            def perms(p):
+                if 'edit' in p and 'view' in p:
+                    return 'rw'
+                elif 'edit' in p:
+                    return 'w'
+                elif 'view' in p:
+                    return 'r'
+            permissions = [perms(k[1]) for k in permissions.items()]
+            # to be sure the first is the longest (rw)
+            permissions.sort(lambda x,y: cmp(len(x), len(y)), reverse=True)
+            if permissions:
+                authz.set(section, user.svn_login, permissions[0])
 
-
-    
     if outfile:
         #TODO: utilizzare un file temporaneo ?
         with open(outfile, 'wb') as configfile:

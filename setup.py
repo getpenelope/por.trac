@@ -31,7 +31,6 @@ setup(name='por.trac',
       entry_points = """\
       [console_scripts]
       authz = por.trac.authz:main
-      auth_wsgi = por.trac.auth_wsgi:main
       """,
       )
 

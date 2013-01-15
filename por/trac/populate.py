@@ -70,18 +70,21 @@ def add_svn_to_project(application):
     if not os.path.exists(svnenvs):
         os.mkdir(svnenvs)
 
-    svnname = None
-    #appname = idnormalizer.normalize(application.name)
-
-    idx = ''
-    while (not svnname):
-        svnname = idnormalizer.normalize("%s%s" % (project.id, idx))
+    svnname = application.svn_name
+    if svnname:
         svn_path = '%s/%s' % (svnenvs, svnname)
-        if os.path.exists(svn_path):
-           idx = idx and (idx+1) or 1
-           svnname = None
+        if not os.path.exists(svn_path):
+            raise OSError, 'The path %s doesn\'t exists!' % svn_path
+    else:
+        idx = ''
+        while (not svnname):
+            svnname = idnormalizer.normalize("%s%s" % (project.id, idx))
+            svn_path = '%s/%s' % (svnenvs, svnname)
+            if os.path.exists(svn_path):
+                idx = idx and (idx+1) or 1
+            svnname = None
 
-    _execute(['svnadmin', 'create', svn_path])
+        _execute(['svnadmin', 'create', svn_path])
 
     for trac in project.tracs:
         tracname = str(trac.trac_name)

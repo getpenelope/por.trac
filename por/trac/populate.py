@@ -267,7 +267,7 @@ def add_trac_to_project(application,
     tracenv.config.set('ticket-workflow', 'reassign_reviewing.permissions', 'TICKET_MODIFY')
     tracenv.config.set('ticket-workflow', 'reopen', 'closed -> reopened')
     tracenv.config.set('ticket-workflow', 'reopen.operations', 'del_resolution')
-    tracenv.config.set('ticket-workflow', 'reopen.permissions', 'TICKET_CREATE')
+    tracenv.config.set('ticket-workflow', 'reopen.permissions', 'TRAC_ADMIN')
     tracenv.config.set('ticket-workflow', 'resolve', 'new,assigned,reopened,reviewing -> closed')
     tracenv.config.set('ticket-workflow', 'resolve.operations', 'set_resolution')
     tracenv.config.set('ticket-workflow', 'resolve.permissions', 'TICKET_MODIFY')

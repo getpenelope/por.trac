@@ -152,9 +152,9 @@ def add_trac_to_project(application,
 
     pordb = str(DBSession.bind.url)
     run([trac_path, 'initenv "%s" "%s?schema=trac_%s"' % (
-            tracname, 
-            pordb.replace('postgresql://', 'postgres://'), 
-            tracname)])
+         tracname, 
+         pordb.replace('postgresql://', 'postgres://'), 
+         tracname)])
 
     tracenv = Environment(trac_path)
 
@@ -164,6 +164,12 @@ def add_trac_to_project(application,
     cursor.executemany(\
         "INSERT INTO report (title, description, query) VALUES (%s, %s, %s)",
         get_reports(project_id=project.id))
+    cursor.close()
+    cnx.commit()
+
+    cursor = cnx.cursor()
+    cursor.execute("DELETE FROM milestone;")
+    cursor.execute("INSERT INTO milestone (name, due, completed) VALUES ('Backlog', 0, 0);")
     cursor.close()
     cnx.commit()
 
@@ -213,11 +219,6 @@ def add_trac_to_project(application,
     tracenv.config.set('ticket-custom', 'blockedby.label', 'Blocked By')
     # BBB: ii valori di customerrequest vengono caricati ondemand 
     tracenv.config.set('ticket-custom', 'customerrequest.options', '')
-    #    '|'.join(["%s>%s>%s" % (project.id, cr.id, cr.name) for cr in project.customer_requests]))
-        
-    # tracenv.config.set('ticket-custom', 'project_id', 'select')
-    # tracenv.config.set('ticket-custom', 'project_id.label', 'Project')
-    # tracenv.config.set('ticket-custom', 'project_id.options', project.id)
 
     # see ticket:80
     if qafields:

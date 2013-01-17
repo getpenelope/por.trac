@@ -2,3 +2,4 @@
 ------------------
  - move to github [amleczko]
  - fixes for SVN integration [amleczko]
+ - Backlog is the new default milestone for newly created tracks [amleczko]

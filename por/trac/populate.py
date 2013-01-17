@@ -61,7 +61,7 @@ def _execute(cmd):
 
 def add_svn_to_project(application):
     from por.models.dashboard import Project
-    
+
     project = DBSession.query(Project).get(application.project_id)
 
     svnenvs = os.environ.get('SVNENVS')
@@ -70,18 +70,21 @@ def add_svn_to_project(application):
     if not os.path.exists(svnenvs):
         os.mkdir(svnenvs)
 
-    svnname = None
-    appname = idnormalizer.normalize(application.name)
-
-    idx = ''
-    while (not svnname):
-        svnname = idnormalizer.normalize("%s%s" % (appname, idx))
+    svnname = application.svn_name
+    if svnname:
         svn_path = '%s/%s' % (svnenvs, svnname)
-        if os.path.exists(svn_path):
-           idx = idx and (idx+1) or 1
-           svnname = None
+        if not os.path.exists(svn_path):
+            raise OSError, 'The path %s doesn\'t exists!' % svn_path
+    else:
+        idx = ''
+        while (not svnname):
+            svnname = idnormalizer.normalize("%s%s" % (project.id, idx))
+            svn_path = '%s/%s' % (svnenvs, svnname)
+            if os.path.exists(svn_path):
+                idx = idx and (idx+1) or 1
+            svnname = None
 
-    _execute(['svnadmin', 'create', svn_path])
+        _execute(['svnadmin', 'create', svn_path])
 
     for trac in project.tracs:
         tracname = str(trac.trac_name)
@@ -264,7 +267,7 @@ def add_trac_to_project(application,
     tracenv.config.set('ticket-workflow', 'reassign_reviewing.permissions', 'TICKET_MODIFY')
     tracenv.config.set('ticket-workflow', 'reopen', 'closed -> reopened')
     tracenv.config.set('ticket-workflow', 'reopen.operations', 'del_resolution')
-    tracenv.config.set('ticket-workflow', 'reopen.permissions', 'TICKET_CREATE')
+    tracenv.config.set('ticket-workflow', 'reopen.permissions', 'TRAC_ADMIN')
     tracenv.config.set('ticket-workflow', 'resolve', 'new,assigned,reopened,reviewing -> closed')
     tracenv.config.set('ticket-workflow', 'resolve.operations', 'set_resolution')
     tracenv.config.set('ticket-workflow', 'resolve.permissions', 'TICKET_MODIFY')

@@ -1,8 +1,6 @@
 1.1.9 (unreleased)
 ------------------
-
-- Nothing changed yet.
-
+ - fix cache keys for authz generation [amleczko]
 
 1.1.8 (2013-01-30)
 ------------------

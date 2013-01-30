@@ -7,7 +7,6 @@
 #
 
 import sys
-import os
 import getopt
 from ConfigParser import ConfigParser
 
@@ -18,8 +17,8 @@ import beaker
 
 
 beaker.cache.cache_regions.update({
-    'calculate_matrix':{},
-    'calculate_matrix.expire':3600,
+        'calculate_matrix' : {'expire':3600,
+                              'key_length': 250}
 })
 
 _USAGE = '''

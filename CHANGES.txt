@@ -1,4 +1,4 @@
-1.1.8 (unreleased)
+1.1.8 (2013-01-30)
 ------------------
  - move to github [amleczko]
  - fixes for SVN integration [amleczko]

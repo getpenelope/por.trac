@@ -124,7 +124,8 @@ def write_authz(svnauth_init):
 
     for repo in db.query(Subversion).all():
         # repos
-        section = '%s:/' % repo.application_uri().split('/')[-1]
+        uri = repo.application_uri().split('/svn/')[-1]
+        section = '%s:/' % uri.strip('/')
         authz.add_section(section)
         for user in users:
             roles = user.roles_in_context(repo.project).copy()

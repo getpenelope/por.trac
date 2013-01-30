@@ -1,6 +1,7 @@
 1.1.9 (unreleased)
 ------------------
  - fix cache keys for authz generation [amleczko]
+ - normalize repository URI [amleczko]
 
 1.1.8 (2013-01-30)
 ------------------

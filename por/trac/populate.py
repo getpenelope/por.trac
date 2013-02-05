@@ -399,6 +399,16 @@ def add_trac_to_project(application,
         else:
             run([trac_path, 'milestone add "%s"' % milestone['title']])
 
+    tickets = getattr(application, 'tickets', [])
+    tracenv = Environment(trac_path)
+    for ticket in tickets:
+        # in this moment the customer request has a proper id
+        ticket['customerrequest'] = ticket['customerrequest'].id
+        ticket['status'] = 'new'
+        t = Ticket(tracenv)
+        t.populate(ticket)
+        t.insert()
+
     # i ruoli vengono assegnati dinamicamente interrogando la dashboard
     # del progetto individuato da congif.por-dashboard.project_id
     #

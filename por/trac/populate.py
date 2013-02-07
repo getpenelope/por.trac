@@ -83,7 +83,7 @@ def add_svn_to_project(application):
             svn_path = '%s/%s' % (svnenvs, svnname)
             if os.path.exists(svn_path):
                 idx = idx and (idx+1) or 1
-            svnname = None
+                svnname = None
 
         _execute(['svnadmin', 'create', svn_path])
 

@@ -3,7 +3,10 @@ import os
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(here, 'README.md')).read()
+README = """por.models
+=============
+
+for more details visit: http://getpenelope.github.com/"""
 CHANGES = open(os.path.join(here, 'CHANGES.txt')).read()
 
 requires = [
@@ -11,8 +14,8 @@ requires = [
     ]
 
 setup(name='por.trac',
-      version='1.1.8',
-      description='Tempi progetti: Trac integration',
+      version='1.1.10.dev0',
+      description='Penelope: Trac integration',
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[
         "Programming Language :: Python",
@@ -20,7 +23,7 @@ setup(name='por.trac',
         ],
       author='Penelope Team',
       author_email='penelopedev@redturtle.it',
-      url='https://getpenelope.github.com',
+      url='http://getpenelope.github.com',
       keywords='web wsgi bfg pylons pyramid',
       namespace_packages=['por'],
       packages=find_packages(),

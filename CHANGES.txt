@@ -1,4 +1,15 @@
-1.1.8 (unreleased)
+1.1.10 (unreleased)
+-------------------
+
+- Nothing changed yet.
+
+
+1.1.9 (2013-01-31)
+------------------
+ - fix cache keys for authz generation [amleczko]
+ - normalize repository URI [amleczko]
+
+1.1.8 (2013-01-30)
 ------------------
  - move to github [amleczko]
  - fixes for SVN integration [amleczko]

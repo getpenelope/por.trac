@@ -1,23 +1,25 @@
 1.1.11 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+ - sets Backlog's date to now+1year [massimoazzolini]
+ - sets trac's name and descr [massimoazzolini]
+ - removes default trac's milestones, components, versions [massimoazzolini]
+ - fixes for project wizard [amleczko]
 
 1.1.10 (2013-02-15)
 -------------------
+
  - fix problem with duplicated authz section [amleczko]
 
 1.1.9 (2013-01-31)
 ------------------
+
  - fix cache keys for authz generation [amleczko]
  - normalize repository URI [amleczko]
 
 1.1.8 (2013-01-30)
 ------------------
+
  - move to github [amleczko]
  - fixes for SVN integration [amleczko]
  - Backlog is the new default milestone for newly created tracks [amleczko]
- - sets Backlog's date to now+1year [massimoazzolini]
- - sets trac's name and descr [massimoazzolini]
- - removes default trac's milestones, components, versions [massimoazzolini]

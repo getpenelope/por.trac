@@ -1,8 +1,12 @@
-1.1.10 (unreleased)
+1.1.11 (unreleased)
 -------------------
 
 - Nothing changed yet.
 
+
+1.1.10 (2013-02-15)
+-------------------
+ - fix problem with duplicated authz section [amleczko]
 
 1.1.9 (2013-01-31)
 ------------------

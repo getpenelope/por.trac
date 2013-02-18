@@ -1,5 +1,5 @@
-1.1.11 (unreleased)
--------------------
+1.2.0 (2013-02-18)
+------------------
 
  - sets Backlog's date to now+1year [massimoazzolini]
  - sets trac's name and descr [massimoazzolini]

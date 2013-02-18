@@ -18,3 +18,6 @@
  - move to github [amleczko]
  - fixes for SVN integration [amleczko]
  - Backlog is the new default milestone for newly created tracks [amleczko]
+ - sets Backlog's date to now+1year [massimoazzolini]
+ - sets trac's name and descr [massimoazzolini]
+ - removes default trac's milestones, components, versions [massimoazzolini]

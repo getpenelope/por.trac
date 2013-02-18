@@ -4,6 +4,7 @@ import lipsum
 import random
 import tempfile
 import subprocess
+from datetime import date
 
 from plone.i18n.normalizer import idnormalizer
 from trac.env import Environment
@@ -167,11 +168,22 @@ def add_trac_to_project(application,
     cursor.close()
     cnx.commit()
 
+    #remove default trac's milestones, components, versions
     cursor = cnx.cursor()
     cursor.execute("DELETE FROM milestone;")
-    cursor.execute("INSERT INTO milestone (name, due, completed) VALUES ('Backlog', 0, 0);")
     cursor.close()
     cnx.commit()
+
+    cursor = cnx.cursor()
+    cursor.execute("DELETE FROM component;")
+    cursor.close()
+    cnx.commit()
+
+    cursor = cnx.cursor()
+    cursor.execute("DELETE FROM version;")
+    cursor.close()
+    cnx.commit()
+
 
     # TODO: attualmente il riferimento dal trac al progetto dashboard è il project_id,
     #       considerando un'instalalzzione che condicide lo stesso stack wsgi,
@@ -186,6 +198,10 @@ def add_trac_to_project(application,
     # master config
     if os.environ.get('TRACMASTERCONFIG'):
         tracenv.config.set('inherit', 'file', os.environ['TRACMASTERCONFIG'])
+
+    # set name and description
+    tracenv.config.set('project', 'name', getattr(application, 'project_name', u''))
+    tracenv.config.set('project', 'descr', application.name)
 
     tracenv.config.set('notification', 'smtp_enabled', smtp_enabled and 'true' or 'false')
     tracenv.config.set('notification', 'smtp_from', 'info@example.com')
@@ -371,7 +387,28 @@ def add_trac_to_project(application,
     # hack to minimize config size
     run([trac_path, 'config set browser color_scale True'])
 
-    #
+    # add properly milestones
+    milestones = getattr(application, 'milestones', [])
+    milestones.append({'title': 'Backlog', 'due_date': date.today().replace(year=date.today().year+1)})
+
+    for milestone in milestones:
+        due = milestone['due_date']
+        if due:
+            due = milestone['due_date'].strftime('%Y-%m-%d')
+            run([trac_path, 'milestone add "%s" %s' % (milestone['title'], due)])
+        else:
+            run([trac_path, 'milestone add "%s"' % milestone['title']])
+
+    tickets = getattr(application, 'tickets', [])
+    tracenv = Environment(trac_path)
+    for ticket in tickets:
+        # in this moment the customer request has a proper id
+        ticket['customerrequest'] = ticket['customerrequest'].id
+        ticket['status'] = 'new'
+        t = Ticket(tracenv)
+        t.populate(ticket)
+        t.insert()
+
     # i ruoli vengono assegnati dinamicamente interrogando la dashboard
     # del progetto individuato da congif.por-dashboard.project_id
     #

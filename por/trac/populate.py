@@ -46,10 +46,10 @@ def _execute(cmd):
     try:
         try:
             ret = subprocess.call(cmd, stdout=f, stderr=f)
-        except OSError:
-            raise Exception('The cmd %r could not be executed, '
-                                'full cmd args are: %r'
-                                % (cmd[0], ' '.join(cmd)))
+        except OSError, e:
+            raise Exception('The cmd %r could not be executed, %r'
+                            'full cmd args are: %r'
+                                % (cmd[0], e, ' '.join(cmd)))
         if ret != 0:
             raise Exception('Error while executing %r' % ' '.join(cmd))
     finally:

@@ -204,10 +204,6 @@ def add_trac_to_project(application,
     tracenv.config.set('project', 'descr', application.name)
 
     tracenv.config.set('notification', 'smtp_enabled', smtp_enabled and 'true' or 'false')
-    tracenv.config.set('notification', 'smtp_from', 'info@example.com')
-    tracenv.config.set('notification', 'smtp_from_name', 'Penelope Team')
-    tracenv.config.set('notification', 'replyto', 'info@example.com')
-    tracenv.config.set('notification', 'smtp_replyto', 'info@example.com')
 
     tracenv.config.set('notification', 'always_notify_owner', 'true')
     tracenv.config.set('notification', 'always_notify_reporter', 'true')
@@ -374,6 +370,14 @@ def add_trac_to_project(application,
 
     tracenv.config.save()
 
+    # let's remove notification config - it is set by the global config
+    tracenv.config.remove('notification', 'smtp_from')
+    tracenv.config.remove('notification', 'smtp_from_name')
+    tracenv.config.remove('notification', 'replyto')
+    tracenv.config.remove('notification', 'smtp_replyto')
+    tracenv.config.remove('trac', 'repository_sync_per_request')
+    tracenv.config.save()
+
     run([trac_path, 'upgrade --no-backup'])
 
     run([trac_path, 'permission remove anonymous *'])
@@ -419,7 +423,6 @@ def add_trac_to_project(application,
 
     application.api_uri = 'trac://%s' % tracname
     application.trac_name = tracname
-
 
 # !!!!!!!!!
 # !!!!!!!!!

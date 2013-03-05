@@ -168,7 +168,110 @@ def add_trac_to_project(application,
     cursor.close()
     cnx.commit()
 
-    #remove default trac's milestones, components, versions
+    # remove report 2
+    cursor = cnx.cursor()
+    cursor.execute("DELETE FROM report where id=2;")
+    cursor.close()
+    cnx.commit()
+
+    # update reports
+    cursor = cnx.cursor()
+    cursor.execute("""UPDATE report set query='
+        SELECT p.value AS __color__,
+            t.id AS ticket, summary, t.type AS type, cr.name AS CR,
+            owner, status,
+            time AS created,
+            changetime AS _changetime, t.description AS _description,
+            reporter AS _reporter
+        FROM ticket t
+        LEFT JOIN enum p ON p.name = t.priority AND p.type = ''priority''
+        LEFT JOIN ticket_custom tc ON t.id = tc.ticket
+        LEFT JOIN public.customer_requests cr ON tc.value = cr.id
+        WHERE status <> ''closed''
+        AND tc.name = ''customerrequest'' 
+        ORDER BY CAST(p.value AS int), milestone, t.type, time' where id=1;""")
+    cursor.execute("""UPDATE report set query='
+            SELECT p.value AS __color__,
+               ''Milestone ''||milestone AS __group__,
+               t.id AS ticket, summary, t.type AS type, 
+               cr.name AS CR,
+               owner, status, 
+               time AS created,
+               changetime AS _changetime, t.description AS _description,
+               reporter AS _reporter
+            FROM ticket t
+            LEFT JOIN enum p ON p.name = t.priority AND p.type = ''priority''
+            LEFT JOIN ticket_custom tc ON t.id = tc.ticket
+            LEFT JOIN public.customer_requests cr ON tc.value = cr.id
+            WHERE status <> ''closed''
+            AND tc.name = ''customerrequest'' 
+            ORDER BY (milestone IS NULL),milestone, CAST(p.value AS int), t.type, time' where id=3;""")
+    cursor.execute("""UPDATE report set query='
+            SELECT p.value AS __color__,
+               owner AS __group__,
+               t.id AS ticket, summary, milestone,  cr.name AS CR, t.type AS type, time AS created,
+               changetime AS _changetime, t.description AS _description,
+               reporter AS _reporter
+            FROM ticket t
+            LEFT JOIN enum p ON p.name = t.priority AND p.type = ''priority''
+            LEFT JOIN ticket_custom tc ON t.id = tc.ticket
+            LEFT JOIN public.customer_requests cr ON tc.value = cr.id
+            WHERE status = ''accepted''
+            AND tc.name = ''customerrequest''
+            ORDER BY owner, CAST(p.value AS int), t.type, time'
+            where id=4;""")
+    cursor.execute("""UPDATE report set query='
+            SELECT p.value AS __color__,
+               owner AS __group__,
+               t.id AS ticket, summary, milestone, t.type AS type, cr.name AS CR, time AS created,
+               t.description AS _description_,
+               changetime AS _changetime, reporter AS _reporter
+            FROM ticket t
+            LEFT JOIN enum p ON p.name = t.priority AND p.type = ''priority''
+            LEFT JOIN ticket_custom tc ON t.id = tc.ticket
+            LEFT JOIN public.customer_requests cr ON tc.value = cr.id
+            WHERE status = ''accepted''
+            AND tc.name = ''customerrequest'' 
+            ORDER BY owner, CAST(p.value AS int), t.type, time'
+            where id=5;""")
+    cursor.execute("""UPDATE report set query='
+            SELECT p.value AS __color__,
+            (CASE status WHEN ''accepted'' THEN ''Accepted'' ELSE ''Owned'' END) AS __group__,
+                 t.id AS ticket, summary, milestone, cr.name AS CR,
+                 t.type AS type, priority, time AS created,
+                 changetime AS _changetime, t.description AS _description,
+                 reporter AS _reporter
+            FROM ticket t
+            LEFT JOIN enum p ON p.name = t.priority AND p.type = ''priority''
+            LEFT JOIN ticket_custom tc ON t.id = tc.ticket
+            LEFT JOIN public.customer_requests cr ON tc.value = cr.id
+            WHERE t.status <> ''closed'' AND owner = $USER
+            AND tc.name = ''customerrequest'' 
+            ORDER BY (status = ''accepted'') DESC, CAST(p.value AS int), milestone, t.type, time'
+            where id=7;""")
+    cursor.execute("""UPDATE report set query='
+            SELECT p.value AS __color__,
+           (CASE owner 
+            WHEN $USER THEN ''My Tickets''
+                ELSE ''Active Tickets''
+            END) AS __group__,
+                t.id AS ticket, summary, milestone, t.type AS type, cr.name AS CR, 
+                owner, status,
+                time AS created,
+                changetime AS _changetime, t.description AS _description,
+                reporter AS _reporter
+            FROM ticket t
+            LEFT JOIN enum p ON p.name = t.priority AND p.type = ''priority''
+            LEFT JOIN ticket_custom tc ON t.id = tc.ticket
+            LEFT JOIN public.customer_requests cr ON tc.value = cr.id
+            WHERE status <> ''closed''
+            AND tc.name = ''customerrequest''
+            ORDER BY (COALESCE(owner, '''') = $USER) DESC, CAST(p.value AS int), milestone, t.type, time'
+            where id=8;""")
+    cursor.close()
+    cnx.commit()
+
+    # remove default trac's milestones, components, versions
     cursor = cnx.cursor()
     cursor.execute("DELETE FROM milestone;")
     cursor.close()

@@ -3,6 +3,7 @@
 
 - add more verbose logging [amleczko]
 - fix problem with strange smtp configuration [amleczko]
+- fix trac reports and remove unsed fields [amleczko]
 
 
 1.2.0 (2013-02-18)

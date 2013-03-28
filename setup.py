@@ -33,7 +33,6 @@ setup(name='por.trac',
       install_requires = requires,
       entry_points = """\
       [console_scripts]
-      authz = por.trac.authz:main
       auth_wsgi = por.trac.auth_wsgi:main
       """,
       )

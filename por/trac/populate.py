@@ -7,6 +7,7 @@ import subprocess
 from datetime import date
 
 from plone.i18n.normalizer import idnormalizer
+from pyramid.threadlocal import get_current_registry
 from trac.env import Environment
 from trac.ticket.model import Ticket
 from trac.admin.console import run
@@ -64,9 +65,10 @@ def add_svn_to_project(application):
     from por.models.dashboard import Project
 
     project = DBSession.query(Project).get(application.project_id)
+    settings = get_current_registry().settings
 
-    svnenvs = os.environ.get('SVNENVS')
-    tracenvs = os.environ.get('TRACENVS')
+    svnenvs = settings.get('por.svn.envs')
+    tracenvs = settings.get('por.trac.envs')
 
     if not os.path.exists(svnenvs):
         os.mkdir(svnenvs)
@@ -114,7 +116,9 @@ def add_trac_to_project(application,
     from por.models.dashboard import Project
     
     project = DBSession.query(Project).get(application.project_id)
-    tracenvs = os.environ.get('TRACENVS')
+
+    settings = get_current_registry().settings
+    tracenvs = settings.get('por.trac.envs')
 
     if not os.path.exists(tracenvs):
         # TODO: logging bootstrap
@@ -295,12 +299,15 @@ def add_trac_to_project(application,
     tracenv.config.set('por-dashboard', 'project-id', application.project_id)
 
     # custom templates
-    if os.environ.get('TRACTEMPLATES'):
-        tracenv.config.set('inherit', 'templates_dir', os.environ['TRACTEMPLATES'])
+    templates = settings.get('por.trac.templates')
+    masterconfig = settings.get('por.trac.masterconfig')
+
+    if templates:
+        tracenv.config.set('inherit', 'templates_dir', templates)
 
     # master config
-    if os.environ.get('TRACMASTERCONFIG'):
-        tracenv.config.set('inherit', 'file', os.environ['TRACMASTERCONFIG'])
+    if masterconfig:
+        tracenv.config.set('inherit', 'file', masterconfig)
 
     # set name and description
     tracenv.config.set('project', 'name', getattr(application, 'project_name', u''))

@@ -16,10 +16,6 @@ def repo_authz(repo, authz, users):
         authz.add_section(section)
     for user in users:
         roles = user.roles_in_context(repo.project).copy()
-        if 'local_developer' in roles:
-            roles.add(u'internal_developer')
-        if 'local_project_manager' in roles:
-            roles.add(u'project_manager')
         acl = [(a.role_id, a.permission_name) for a in repo.acl]
         acl.append(('administrator', 'edit'))
         acl.append(('administrator', 'view'))

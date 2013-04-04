@@ -14,7 +14,7 @@ requires = [
     ]
 
 setup(name='por.trac',
-      version='1.2.2.dev0',
+      version='1.2.1.1',
       description='Penelope: Trac integration',
       long_description=README + '\n\n' +  CHANGES,
       classifiers=[

@@ -1,7 +1,6 @@
 # inspired by https://github.com/dr4Ke/ldap-to-svn-authz/blob/master/sync_ldap_groups_to_svn_authz.py
 
 from ConfigParser import ConfigParser
-from pyramid.threadlocal import get_current_registry
 
 from por.models import DBSession
 from por.models.dashboard import User, Subversion
@@ -37,7 +36,7 @@ def repo_authz(repo, authz, users):
             authz.set(section, user.svn_login, permissions[0])
 
 
-def generate_authz():
+def generate_authz(settings):
     """
         [groups]
         @admin = haren
@@ -62,7 +61,6 @@ def generate_authz():
         ldap-user2 = rw
         file-user2 = rw
     """
-    settings = get_current_registry().settings
     svnauth_init = settings.get('por.svn.authz_init')
 
     db = DBSession()

@@ -117,7 +117,7 @@ def add_trac_to_project(application,
     
     project = DBSession.query(Project).get(application.project_id)
 
-    settings = get_current_registry().settings
+    settings = get_current_registry().settings or application.settings
     tracenvs = settings.get('por.trac.envs')
 
     if not os.path.exists(tracenvs):

@@ -485,6 +485,13 @@ def add_trac_to_project(application,
     tracenv.config.remove('notification', 'smtp_from_name')
     tracenv.config.remove('notification', 'replyto')
     tracenv.config.remove('notification', 'smtp_replyto')
+    tracenv.config.remove('notification', 'email_sender')
+    tracenv.config.remove('notification', 'smtp_enabled')
+    tracenv.config.remove('notification', 'smtp_host')
+    tracenv.config.remove('notification', 'smtp_port')
+    tracenv.config.remove('notification', 'smtp_password')
+    tracenv.config.remove('notification', 'smtp_username')
+
     tracenv.config.remove('trac', 'repository_sync_per_request')
     tracenv.config.save()
 

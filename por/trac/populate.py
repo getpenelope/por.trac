@@ -65,7 +65,7 @@ def _execute(cmd):
 POST_COMMIT_HOOK = """#!/bin/sh
 REPOS="$1"
 REV="$2"
-%(trac_path)s %(svn_path)s changeset added $REPOS $REV
+%(trac_admin)s %(trac_path)s changeset added $REPOS $REV
 """
 
 
@@ -77,6 +77,7 @@ def add_svn_to_project(application):
 
     svnenvs = settings.get('por.svn.envs')
     tracenvs = settings.get('por.trac.envs')
+    trac_admin = os.path.abspath('%s/../../bin/trac-admin' % tracenvs)
 
     if not os.path.exists(svnenvs):
         os.mkdir(svnenvs)
@@ -106,7 +107,7 @@ def add_svn_to_project(application):
 
         hook_filename = '%s/hooks/post-commit' % svn_path
         with open(hook_filename, 'w') as hook:
-            opts = {'trac_path': trac_path, 'svn_path': svn_path}
+            opts = {'trac_path': trac_path, 'trac_admin': trac_admin}
             hook.write(POST_COMMIT_HOOK % opts)
         st = os.stat(hook_filename)
         os.chmod(hook_filename, st.st_mode | stat.S_IEXEC)

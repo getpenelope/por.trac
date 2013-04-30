@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import stat
 import lipsum
 import random
 import tempfile
@@ -61,6 +62,13 @@ def _execute(cmd):
     return ret
 
 
+POST_COMMIT_HOOK = """#!/bin/sh
+REPOS="$1"
+REV="$2"
+%(trac_path)s %(svn_path)s changeset added $REPOS $REV
+"""
+
+
 def add_svn_to_project(application):
     from por.models.dashboard import Project
 
@@ -94,7 +102,14 @@ def add_svn_to_project(application):
         trac_path = '%s/%s' % (tracenvs, tracname)
         run([trac_path, 'repository add %s %s' % (svnname, svn_path)])
         run([trac_path, 'repository resync %s' % (svnname)])
-        run([trac_path, 'config set trac repository_sync_per_request %s' % svnname])
+        run([trac_path, 'config set trac repository_sync_per_request ""'])
+
+        hook_filename = '%s/hooks/post-commit' % svn_path
+        with open(hook_filename, 'w') as hook:
+            opts = {'trac_path': trac_path, 'svn_path': svn_path}
+            hook.write(POST_COMMIT_HOOK % opts)
+        st = os.stat(hook_filename)
+        os.chmod(hook_filename, st.st_mode | stat.S_IEXEC)
 
     application.api_uri = 'svn://%s' % svnname
     application.svn_name = svnname

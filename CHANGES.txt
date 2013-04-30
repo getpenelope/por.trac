@@ -1,8 +1,7 @@
 1.5 (unreleased)
 ----------------
 
-- Nothing changed yet.
-
+- change post-commit hook [amleczko]
 
 1.4 (2013-04-23)
 ----------------

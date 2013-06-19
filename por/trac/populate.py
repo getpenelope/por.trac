@@ -330,9 +330,10 @@ def add_trac_to_project(application,
     tracenv.config.set('project', 'descr', application.name)
 
     tracenv.config.set('notification', 'smtp_enabled', smtp_enabled and 'true' or 'false')
-
     tracenv.config.set('notification', 'always_notify_owner', 'true')
     tracenv.config.set('notification', 'always_notify_reporter', 'true')
+    manager_email = project.manager.email or ''
+    tracenv.config.set('notification', 'smtp_always_cc', manager_email) # manager should always receiv CC
 
     tracenv.config.set('attachment', 'max_size', attachment_max_size)
 

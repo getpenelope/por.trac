@@ -1,7 +1,7 @@
 1.6 (unreleased)
 ----------------
 
-- Nothing changed yet.
+- make sure new tracs sets PM for CC notifications [amleczko]
 
 
 1.5 (2013-04-30)

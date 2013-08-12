@@ -1,6 +1,6 @@
 from sqlalchemy import event
-from por.models.dashboard import Application
-from por.models.dashboard import modify_application_type, TRAC, SVN
+from penelope.core.models.dashboard import Application
+from penelope.core.models.dashboard import modify_application_type, TRAC, SVN
 from por.trac.populate import add_trac_to_project, add_svn_to_project
 
 
@@ -18,4 +18,3 @@ def app_insert_listener(mapper, connection, target):
 
 
 event.listen(Application, 'before_insert', app_insert_listener, propagate=True)
-

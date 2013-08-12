@@ -2,8 +2,8 @@
 
 from ConfigParser import ConfigParser
 
-from por.models import DBSession
-from por.models.dashboard import User, Subversion
+from penelope.core.models import DBSession
+from penelope.core.models.dashboard import User, Subversion
 
 
 def repo_authz(repo, authz, users):

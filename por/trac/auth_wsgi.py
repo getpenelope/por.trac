@@ -2,12 +2,14 @@
 import hashlib
 import os
 import transaction
+
 from ConfigParser import ConfigParser
+from sqlalchemy.orm.exc import NoResultFound
 from time import time
 
-from por.models import DBSession, includeme
-from por.models.dashboard import User
-from sqlalchemy.orm.exc import NoResultFound
+from penelope.core.models import DBSession, includeme
+from penelope.core.models.dashboard import User
+
 
 # TODO: sostituire con un config parser vero?
 class Config(object):
@@ -35,17 +37,17 @@ def check_password(environ, login, password):
 
     db = DBSession()
     try:
-	try:
+        try:
             user = db.query(User).filter_by(svn_login=login).one()
         except NoResultFound:
-	    return None
+            return None
         if user.check_password(password):
             cache[hash] = int(time())
             return True
         else:
             return False
     finally:
-	transaction.commit()
+        transaction.commit()
 
 TIMEOUT=30
 cache = {}

@@ -2,6 +2,7 @@
 ----------------
 
 - make sure new tracs sets PM for CC notifications [amleczko]
+- refactor for penelope.core [amleczko]
 
 
 1.5 (2013-04-30)
